@@ -3,6 +3,7 @@ import time
 
 
 async def some_python_coroutine(delay):
+    raise ValueError
     await asyncio.sleep(delay=delay)
     return "A"
 
@@ -19,6 +20,7 @@ async def main():
     result = await asyncio.gather(
         some_python_coroutine(delay=3),
         function_that_returns_a_future_object(delay=2),
+        return_exceptions=True,
     )
     print(result)
     print(time.strftime("%X"))
