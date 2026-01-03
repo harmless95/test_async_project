@@ -13,12 +13,19 @@ async def main():
         asyncio.create_task(long_task(name="вечер", delay=3)),
         asyncio.create_task(long_task(name="ночь", delay=1)),
     ]
-    for task in asyncio.as_completed(tasks, timeout=3):
-        try:
-            result = await task
-            print(result)
-        except asyncio.TimeoutError:
-            print("Сработал Timeout")
+    try:
+        for task in asyncio.as_completed(tasks, timeout=4):
+            try:
+                result = await task
+                print(result)
+            except asyncio.TimeoutError:
+                print("Сработал Timeout")
+    finally:
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+
+        await asyncio.gather(*tasks, return_exceptions=True)
 
 
 if __name__ == "__main__":
